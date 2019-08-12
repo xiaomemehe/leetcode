@@ -1,0 +1,141 @@
+package main
+
+import (
+	"fmt"
+)
+
+type ListNode struct {
+	Val int;//Val类型自定义
+	Next *ListNode;
+}
+
+type List struct {
+	root *ListNode
+	count int
+}
+
+func main() {
+	var l1,l2 List
+	l1.add(2)
+	l1.add(4)
+	l1.add(3)
+  
+	l2.add(5)
+	l2.add(6)
+	l2.add(4)
+
+	//fmt.Println(l1.toArray())
+	//fmt.Println(reflect.TypeOf(l1))
+	//fmt.Println(l1.)
+	////fmt.Println(l1.get())
+	fmt.Println(addTwoNumbers(l1.firstNode(),l2.firstNode()))
+	//fmt.Println("Please input l1")
+	//fmt.Scanln(&l1)
+	//fmt.Println("Please input l2")
+	//fmt.Scanln(&l2)
+
+	//var name string
+	//fmt.Scanln(&name)
+	//fmt.Println(name)
+}
+
+func (list *List)firstNode() (*ListNode){//返回第一个node节点，原因是AddNumber传入的参数类型为Node节点
+	if list.root==nil{
+		return nil
+	}
+	node:=list.root
+	return node
+}
+
+func (list *List)toArray() (datas []int){//打印链表
+	if list.root==nil{
+		return nil
+	}
+	node:=list.root
+	fmt.Println(node)
+	for{
+		datas=append(datas,node.Val)
+		if node.Next!=nil{
+			node=node.Next
+		}else{
+			break
+		}
+	}
+	return datas
+}
+
+//根据索引查询数据(从1开始算)
+func (list *List)get(index int) (data int){
+	if index>list.count{
+		data=0
+	}else{
+		node:=list.root
+		for i:=1;i<index;i++{
+			node=node.Next
+		}
+		data=node.Val
+	}
+	return
+}
+
+func (list *List)add(data int){
+	if data==0{
+		return
+	}
+	var newNode ListNode
+	newNode.Val=data
+	if list.root==nil{
+		list.root=&newNode
+	}else{
+		list.root.addNode(&newNode)
+	}
+	list.count++
+}
+
+//添加节点
+func (node *ListNode)addNode(newNode *ListNode){
+	if node.Next==nil {
+		node.Next=newNode
+	}else{
+		node.Next.addNode(newNode)
+	}
+}
+
+
+func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+	if l1 == nil {
+		return l2
+	}
+	if l2 == nil {
+		return l1
+	}
+	current := &ListNode{}//创建当前名为current节点
+	res := current
+	var carry int
+	for l1 != nil || l2 != nil {//循环
+		var l1Val, l2Val int
+		if l1 != nil {
+			l1Val = l1.Val
+			l1 = l1.Next//l1变为下一个节点
+		}
+		if l2 != nil {
+			l2Val = l2.Val
+			l2 = l2.Next
+		}
+		result := (l1Val + l2Val + carry) % 10 //个位数相加后取余数，result为个位数
+		carry = (l1Val + l2Val + carry) / 10 //个位数相加后除10取整数，carry为进一位
+		current.Next = &ListNode{Val: result}//result给节点赋值
+		current = current.Next//交换操作
+		fmt.Println(current)
+	}
+
+	if carry >= 1 {
+		current.Next = &ListNode{Val: 1}
+	}
+	return res.Next
+
+}
+
+
+//link 链表操作
+https://blog.csdn.net/chenxing1230/article/details/83512686
